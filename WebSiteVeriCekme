@@ -1,0 +1,16 @@
+import requests
+from bs4 import BeautifulSoup
+
+
+url = requests.get("https://github.com/Xiast-sw")
+
+if url.status_code ==200:
+    print("siteden veri çekilebilir")
+else:
+    print("siteden veri çekilemez")
+
+soup=BeautifulSoup(url.content,"html.parser")
+
+div_cek=soup.find("div")
+
+print(div_cek)
