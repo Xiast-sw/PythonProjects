@@ -1,0 +1,120 @@
+import tkinter as tk
+from tkinter import ttk
+
+# Birim dönüşüm hesaplama fonksiyonu
+def convert_units():
+    try:
+        value = float(entry_value.get())  # Kullanıcının girdiği değer
+        category = combo_category.get()  # Seçilen kategori
+        from_unit = combo_from_unit.get()
+        to_unit = combo_to_unit.get()
+
+        # Uzaklık birimleri
+        if category == "Uzaklık":
+            if from_unit == "Metre" and to_unit == "Kilometre":
+                result = value / 1000
+            elif from_unit == "Kilometre" and to_unit == "Metre":
+                result = value * 1000
+            elif from_unit == "Centimetre" and to_unit == "Metre":
+                result = value / 100
+            elif from_unit == "Metre" and to_unit == "Centimetre":
+                result = value * 100
+        # Ağırlık birimleri
+        elif category == "Ağırlık":
+            if from_unit == "Gram" and to_unit == "Kilogram":
+                result = value / 1000
+            elif from_unit == "Kilogram" and to_unit == "Gram":
+                result = value * 1000
+        # Sıcaklık birimleri
+        elif category == "Sıcaklık":
+            if from_unit == "Fahrenheit" and to_unit == "Celsius":
+                result = (value - 32) * 5.0/9.0
+            elif from_unit == "Celsius" and to_unit == "Fahrenheit":
+                result = (value * 9.0/5.0) + 32
+        # Hacim birimleri
+        elif category == "Hacim":
+            if from_unit == "Litre" and to_unit == "Mililitre":
+                result = value * 1000
+            elif from_unit == "Mililitre" and to_unit == "Litre":
+                result = value / 1000
+        else:
+            result = value  # Aynı birimler seçildiğinde sonuç aynı olur.
+
+        # Sonucu label'da göster
+        label_result.config(text=f"Sonuç: {result:.2f}")
+    except ValueError:
+        label_result.config(text="Geçersiz giriş! Lütfen bir sayı girin.")
+
+# Birim kategorilerini güncelleme fonksiyonu
+def update_units(event):
+    category = combo_category.get()
+    if category == "Uzaklık":
+        combo_from_unit['values'] = ["Metre", "Kilometre", "Centimetre"]
+        combo_to_unit['values'] = ["Metre", "Kilometre", "Centimetre"]
+    elif category == "Ağırlık":
+        combo_from_unit['values'] = ["Gram", "Kilogram"]
+        combo_to_unit['values'] = ["Gram", "Kilogram"]
+    elif category == "Sıcaklık":
+        combo_from_unit['values'] = ["Fahrenheit", "Celsius"]
+        combo_to_unit['values'] = ["Fahrenheit", "Celsius"]
+    elif category == "Hacim":
+        combo_from_unit['values'] = ["Litre", "Mililitre"]
+        combo_to_unit['values'] = ["Litre", "Mililitre"]
+
+# Uygulama penceresi oluştur
+root = tk.Tk()
+root.title("Birim Dönüştürücü")
+root.geometry("400x400")
+root.configure(bg="#F2F2F2")
+
+# Başlık etiketi
+label_title = tk.Label(root, text="Birim Dönüştürücü", font=("Helvetica", 16), bg="#F2F2F2", fg="#4B4B4B", pady=20)
+label_title.pack()
+
+frame_input = tk.Frame(root, bg="#F2F2F2")
+frame_input.pack(pady=10)
+
+# Değer giriş etiketi ve kutusu
+label_value = tk.Label(frame_input, text="Değer Girin:", font=("Helvetica", 12), bg="#F2F2F2", fg="#4B4B4B")
+label_value.grid(row=0, column=0, padx=10)
+
+entry_value = tk.Entry(frame_input, font=("Helvetica", 12), width=20, bd=2, relief="solid", bg="#E1E1E1", fg="#4B4B4B")
+entry_value.grid(row=0, column=1, padx=10)
+
+# Kategori seçimi
+label_category = tk.Label(frame_input, text="Kategori Seçin:", font=("Helvetica", 12), bg="#F2F2F2", fg="#4B4B4B")
+label_category.grid(row=1, column=0, padx=10)
+
+combo_category = ttk.Combobox(frame_input, values=["Uzaklık", "Ağırlık", "Sıcaklık", "Hacim"], state="readonly", font=("Helvetica", 12))
+combo_category.grid(row=1, column=1, padx=10)
+combo_category.set("Uzaklık")  # Varsayılan kategori
+
+# Kategori seçildiğinde birimleri güncelle
+combo_category.bind("<<ComboboxSelected>>", update_units)
+
+# Birim seçimleri
+label_from_unit = tk.Label(frame_input, text="Birimi Seçin:", font=("Helvetica", 12), bg="#F2F2F2", fg="#4B4B4B")
+label_from_unit.grid(row=2, column=0, padx=10)
+
+combo_from_unit = ttk.Combobox(frame_input, state="readonly", font=("Helvetica", 12))
+combo_from_unit.grid(row=2, column=1, padx=10)
+
+label_to_unit = tk.Label(frame_input, text="Hedef Birimi Seçin:", font=("Helvetica", 12), bg="#F2F2F2", fg="#4B4B4B")
+label_to_unit.grid(row=3, column=0, padx=10)
+
+combo_to_unit = ttk.Combobox(frame_input, state="readonly", font=("Helvetica", 12))
+combo_to_unit.grid(row=3, column=1, padx=10)
+
+# Başlangıçta birim seçeneklerini ayarla
+update_units(None)
+
+# Dönüştür butonu
+button_convert = tk.Button(root, text="Dönüştür", font=("Helvetica", 14), command=convert_units, bg="#4CAF50", fg="white", relief="flat", width=20)
+button_convert.pack(pady=20)
+
+# Sonuç etiketi
+label_result = tk.Label(root, text="Sonuç: ", font=("Helvetica", 14), bg="#F2F2F2", fg="#4B4B4B")
+label_result.pack()
+
+# Pencereyi başlat
+root.mainloop()
